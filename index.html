@@ -16,6 +16,7 @@
       <span class="panel-subtitle">Rainbow Physics Simulation</span>
     </div>
 
+    <!-- Sun -->
     <div class="section-label">Sun</div>
     <div class="control-row">
       <label>Azimuth <span id="sun-azimuth-val">180°</span></label>
@@ -30,6 +31,7 @@
       <input type="range" id="sun-intensity" min="0.1" max="3.0" value="1.5" step="0.05" />
     </div>
 
+    <!-- Rain -->
     <div class="section-label">Rain</div>
     <div class="control-row">
       <label>Density <span id="rain-density-val">8000</span></label>
@@ -48,6 +50,7 @@
       <input type="range" id="rain-drift" min="-2.0" max="2.0" value="0.0" step="0.1" />
     </div>
 
+    <!-- Rainbow -->
     <div class="section-label">Rainbow</div>
     <div class="control-row">
       <label>Intensity <span id="rainbow-intensity-val">1.2</span></label>
@@ -72,25 +75,68 @@
       </label>
     </div>
 
+    <!-- Camera -->
     <div class="section-label">Camera</div>
     <div class="control-row">
       <label>FOV <span id="camera-fov-val">60°</span></label>
       <input type="range" id="camera-fov" min="30" max="110" value="60" step="1" />
     </div>
+    <div class="preset-grid">
+      <button class="preset-btn" data-preset="Rainbow View">🌈 Rainbow</button>
+      <button class="preset-btn" data-preset="Side View">↔ Side</button>
+      <button class="preset-btn" data-preset="Aerial">🔭 Aerial</button>
+      <button class="preset-btn" data-preset="Drop Close-Up">💧 Drop</button>
+    </div>
 
+    <!-- Simulation -->
     <div class="section-label">Simulation</div>
     <div class="control-row">
-      <label>Time Scale <span id="time-scale-val">1.0</span></label>
+      <label>Time Scale <span id="time-scale-val">1.00</span></label>
       <input type="range" id="time-scale" min="0.0" max="3.0" value="1.0" step="0.05" />
     </div>
-    <div class="button-row">
-      <button id="pause-btn">Pause</button>
-      <button id="reset-btn">Reset Camera</button>
+    <div class="speed-row">
+      <button class="speed-btn" data-speed="0">⏸</button>
+      <button class="speed-btn" data-speed="0.25">¼×</button>
+      <button class="speed-btn" data-speed="0.5">½×</button>
+      <button class="speed-btn active" data-speed="1">1×</button>
+      <button class="speed-btn" data-speed="2">2×</button>
     </div>
     <div class="button-row" style="margin-top:6px">
+      <button id="pause-btn">Pause</button>
+      <button id="reset-btn">Reset View</button>
+    </div>
+
+    <!-- Overlays -->
+    <div class="section-label">Physics Overlays</div>
+    <div class="toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="overlay-rays" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Ray paths through droplet
+      </label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="overlay-ring" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        42° observation ring
+      </label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="overlay-info" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Physics info panel
+      </label>
+    </div>
+
+    <!-- Celso -->
+    <div class="section-label">Guide</div>
+    <div class="button-row">
       <button id="celso-toggle-btn">Hide Celso</button>
     </div>
 
+    <!-- Controls -->
     <div class="section-label">Controls</div>
     <div class="help-text">
       <span><b>Orbit:</b> Left drag</span>
@@ -108,12 +154,40 @@
     <div id="rainbow-vis-display">🌈 --%</div>
   </div>
 
+  <!-- ── Physics info panel ────────────────────────────────────────────── -->
+  <div id="info-panel" class="info-hidden">
+    <div class="info-title">Physics Values</div>
+    <table class="info-table">
+      <tr><td>Sun elevation</td><td id="info-sun-el">--</td></tr>
+      <tr><td>Rainbow visibility</td><td id="info-rb-vis">--</td></tr>
+      <tr class="info-divider"><td colspan="2">Exit angles (primary bow)</td></tr>
+      <tr><td><span class="dot-r">●</span> Red  (642 nm)</td><td id="info-exit-r">--</td></tr>
+      <tr><td><span class="dot-g">●</span> Green (532 nm)</td><td id="info-exit-g">--</td></tr>
+      <tr><td><span class="dot-b">●</span> Blue  (460 nm)</td><td id="info-exit-b">--</td></tr>
+    </table>
+    <div class="info-note">n_red=1.3311 · n_green=1.3350 · n_blue=1.3406</div>
+  </div>
+
+  <!-- ── Color legend ───────────────────────────────────────────────────── -->
+  <div id="color-legend">
+    <div class="legend-title">Primary Rainbow</div>
+    <div class="legend-bar"></div>
+    <div class="legend-labels">
+      <span>Violet<br>40.6°</span>
+      <span>Green<br>41.5°</span>
+      <span>Red<br>42.5°</span>
+    </div>
+  </div>
+
   <!-- ── Celso popup ───────────────────────────────────────────────────── -->
   <div id="celso-popup" class="celso-hidden">
-    <div class="celso-left">
-      <div id="celso-icon" class="celso-icon">🌈</div>
+    <!-- Avatar sits outside/below the bubble -->
+    <div class="celso-avatar-wrap">
+      <img src="src/celso_avatar.png" class="celso-avatar-img" alt="Celso" />
     </div>
-    <div class="celso-body">
+    <!-- Speech bubble -->
+    <div class="celso-bubble">
+      <div class="celso-bubble-tail"></div>
       <div class="celso-nameplate">
         <span class="celso-name">Celso</span>
         <span class="celso-badge">Physics Guide</span>
@@ -121,8 +195,8 @@
       <div id="celso-msg-title" class="celso-msg-title">Olá!</div>
       <div id="celso-message" class="celso-message">Loading...</div>
       <div id="celso-dots" class="celso-dots"></div>
+      <button id="celso-close" title="Dismiss">✕</button>
     </div>
-    <button id="celso-close" title="Dismiss">✕</button>
   </div>
 
   <script type="module" src="src/main.js"></script>

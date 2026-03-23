@@ -5,25 +5,27 @@
  */
 
 import * as THREE from 'three';
-import { Config }           from './config.js';
-import { createScene }      from './scene.js';
-import { Sun }              from './sun.js';
-import { Rain }             from './rain.js';
-import { Rainbow }          from './rainbow.js';
-import { Celso }            from './celso.js';
-import { CameraController } from './camera.js';
+import { Config }            from './config.js';
+import { createScene }       from './scene.js';
+import { Sun }               from './sun.js';
+import { Rain }              from './rain.js';
+import { Rainbow }           from './rainbow.js';
+import { Celso }             from './celso.js';
+import { RayVis }            from './rayvis.js';
+import { AngleOverlay }      from './overlays.js';
+import { CameraController }  from './camera.js';
 import { initUI, updateStats } from './ui.js';
 
-// ── Renderer ──
+// ── Renderer ──────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.toneMapping    = THREE.ACESFilmicToneMapping;
+renderer.toneMapping         = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.outputColorSpace    = THREE.SRGBColorSpace;
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// ── Camera ──
+// ── Camera ────────────────────────────────────────────────────────────────
 const camera = new THREE.PerspectiveCamera(
   Config.camera.fov,
   window.innerWidth / window.innerHeight,
@@ -36,40 +38,57 @@ camera.position.set(
   Config.camera.initialPosition.z,
 );
 
-// ── Scene & systems ──
-const scene   = createScene();
-const sun     = new Sun(scene);
-const rain    = new Rain(scene);
-const rainbow = new Rainbow(scene);
-const celso   = new Celso();
-const camCtrl = new CameraController(camera, renderer.domElement);
+// ── Scene & systems ───────────────────────────────────────────────────────
+const scene        = createScene();
+const sun          = new Sun(scene);
+const rain         = new Rain(scene);
+const rainbow      = new Rainbow(scene);
+const celso        = new Celso();
+const rayVis       = new RayVis(scene);
+const angleOverlay = new AngleOverlay(scene);
+const camCtrl      = new CameraController(camera, renderer.domElement);
 
-// ── UI ──
+// ── Sun direction helper (shared across systems) ──────────────────────────
+const _sunDir = new THREE.Vector3();
+function getSunDir() {
+  const az = Config.sun.azimuth   * (Math.PI / 180);
+  const el = Config.sun.elevation * (Math.PI / 180);
+  _sunDir.set(
+    Math.cos(el) * Math.sin(az),
+    Math.sin(el),
+    Math.cos(el) * Math.cos(az),
+  ).normalize();
+  return _sunDir;
+}
+
+// ── UI ────────────────────────────────────────────────────────────────────
 initUI({ sun, rain, rainbow, cameraController: camCtrl });
 
-// ── Resize ──
+// ── Resize ────────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ── Main loop ──
+// ── Main loop ─────────────────────────────────────────────────────────────
 const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
 
-  const rawDt = Math.min(clock.getDelta(), 0.05); // cap at 50ms
-  const dt    = rawDt; // timeScale applied inside systems
+  const rawDt = Math.min(clock.getDelta(), 0.05);
+  const sunDir = getSunDir();
 
   camCtrl.update(rawDt);
   rain.update(rawDt);
   rainbow.update(camera);
+  rayVis.update(sunDir);
+  angleOverlay.update(camera);
   celso.update(rawDt, rainbow.visibility);
 
   renderer.render(scene, camera);
-  updateStats(rawDt, rain.dropCount, rainbow.visibility);
+  updateStats(rawDt, rain.dropCount, rainbow.visibility, rayVis.lastExitAngles);
 }
 
 animate();

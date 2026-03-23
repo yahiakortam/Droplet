@@ -52,4 +52,11 @@ export const Config = {
   celso: {
     enabled: true,
   },
+
+  // Educational overlays
+  overlays: {
+    rayPaths:  false,   // geometric optics ray trace through demo droplet
+    angleRing: false,   // 42° cone ring around anti-solar point
+    infoPanel: false,   // live physics numbers panel
+  },
 };
