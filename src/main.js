@@ -65,21 +65,22 @@ function getSunDir() {
 initUI({ sun, rain, rainbow, cameraController: camCtrl });
 
 // ── Resize ────────────────────────────────────────────────────────────────
-window.addEventListener('resize', () => {
+window.addEventListener('resize', () => { // listens for browser resize and updates the camera's aspect ratio and calls updateProjectionMatrix to update the change
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // ── Main loop ─────────────────────────────────────────────────────────────
-const clock = new THREE.Clock();
+const clock = new THREE.Clock(); // measures time between frames (dt)
 
 function animate() {
-  requestAnimationFrame(animate);
+  requestAnimationFrame(animate); // runs the animate function every frame recursively
 
   const rawDt = Math.min(clock.getDelta(), 0.05);
-  const sunDir = getSunDir();
+  const sunDir = getSunDir(); // compute the direction of the sun
 
+  // update everything on the scene
   camCtrl.update(rawDt);
   rain.update(rawDt);
   rainbow.update(camera);
@@ -87,8 +88,8 @@ function animate() {
   angleOverlay.update(camera);
   celso.update(rawDt, rainbow.visibility);
 
-  renderer.render(scene, camera);
-  updateStats(rawDt, rain.dropCount, rainbow.visibility, rayVis.lastExitAngles);
+  renderer.render(scene, camera); // render the scene
+  updateStats(rawDt, rain.dropCount, rainbow.visibility, rayVis.lastExitAngles); // update ui
 }
 
 animate();
