@@ -1,7 +1,7 @@
 # Droplet
 
 **Interactive Rainbow Physics Simulation**
-Physics 7C Final Project — Yahia Kortam, Aayaan, Reece Hunter
+Physics 7C Final Project — Yahia Kortam, Aayaan Hassan, Reece Hunter
 
 ---
 
