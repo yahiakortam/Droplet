@@ -9,7 +9,7 @@
 <body>
   <div id="canvas-container"></div>
 
-  <!-- Control Panel -->
+  <!-- ── Control Panel ─────────────────────────────────────────────────── -->
   <div id="control-panel">
     <div class="panel-header">
       <span class="panel-title">Droplet</span>
@@ -48,6 +48,30 @@
       <input type="range" id="rain-drift" min="-2.0" max="2.0" value="0.0" step="0.1" />
     </div>
 
+    <div class="section-label">Rainbow</div>
+    <div class="control-row">
+      <label>Intensity <span id="rainbow-intensity-val">1.2</span></label>
+      <input type="range" id="rainbow-intensity" min="0.0" max="3.0" value="1.2" step="0.05" />
+    </div>
+    <div class="control-row">
+      <label>Dispersion <span id="rainbow-dispersion-val">1.5</span></label>
+      <input type="range" id="rainbow-dispersion" min="0.5" max="4.0" value="1.5" step="0.1" />
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="rainbow-secondary" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Secondary rainbow (~52°)
+      </label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="rainbow-toggle" checked />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Show rainbow
+      </label>
+    </div>
+
     <div class="section-label">Camera</div>
     <div class="control-row">
       <label>FOV <span id="camera-fov-val">60°</span></label>
@@ -63,6 +87,9 @@
       <button id="pause-btn">Pause</button>
       <button id="reset-btn">Reset Camera</button>
     </div>
+    <div class="button-row" style="margin-top:6px">
+      <button id="celso-toggle-btn">Hide Celso</button>
+    </div>
 
     <div class="section-label">Controls</div>
     <div class="help-text">
@@ -74,10 +101,28 @@
     </div>
   </div>
 
-  <!-- Stats overlay -->
+  <!-- ── Stats overlay ─────────────────────────────────────────────────── -->
   <div id="stats-overlay">
     <div id="fps-display">-- fps</div>
     <div id="drop-count-display">-- drops</div>
+    <div id="rainbow-vis-display">🌈 --%</div>
+  </div>
+
+  <!-- ── Celso popup ───────────────────────────────────────────────────── -->
+  <div id="celso-popup" class="celso-hidden">
+    <div class="celso-left">
+      <div id="celso-icon" class="celso-icon">🌈</div>
+    </div>
+    <div class="celso-body">
+      <div class="celso-nameplate">
+        <span class="celso-name">Celso</span>
+        <span class="celso-badge">Physics Guide</span>
+      </div>
+      <div id="celso-msg-title" class="celso-msg-title">Olá!</div>
+      <div id="celso-message" class="celso-message">Loading...</div>
+      <div id="celso-dots" class="celso-dots"></div>
+    </div>
+    <button id="celso-close" title="Dismiss">✕</button>
   </div>
 
   <script type="module" src="src/main.js"></script>

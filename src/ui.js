@@ -5,7 +5,7 @@
 
 import { Config } from './config.js';
 
-export function initUI({ sun, rain, cameraController }) {
+export function initUI({ sun, rain, rainbow, cameraController }) {
 
   // ── Helpers ──
   function bind(id, obj, key, display, fmt = v => v) {
@@ -17,18 +17,17 @@ export function initUI({ sun, rain, cameraController }) {
       const v = parseFloat(el.value);
       obj[key] = v;
       if (lbl) lbl.textContent = fmt(v);
-      // Notify specific systems
       if (obj === Config.sun)  sun.update();
       if (obj === Config.rain && key === 'size') rain.refreshSizes();
     });
 
-    // Init label
     if (lbl) lbl.textContent = fmt(parseFloat(el.value));
   }
 
-  function deg(v)   { return Math.round(v) + '°'; }
-  function fixed1(v){ return v.toFixed(1); }
-  function round(v) { return Math.round(v); }
+  function deg(v)    { return Math.round(v) + '°'; }
+  function fixed1(v) { return v.toFixed(1); }
+  function fixed2(v) { return v.toFixed(2); }
+  function round(v)  { return Math.round(v); }
 
   // Sun
   bind('sun-azimuth',   Config.sun, 'azimuth',   'sun-azimuth-val',   deg);
@@ -36,10 +35,28 @@ export function initUI({ sun, rain, cameraController }) {
   bind('sun-intensity', Config.sun, 'intensity', 'sun-intensity-val', fixed1);
 
   // Rain
-  bind('rain-density', Config.rain, 'count',  'rain-density-val',  round);
-  bind('rain-size',    Config.rain, 'size',   'rain-size-val',     fixed1);
-  bind('rain-speed',   Config.rain, 'speed',  'rain-speed-val',    fixed1);
-  bind('rain-drift',   Config.rain, 'drift',  'rain-drift-val',    fixed1);
+  bind('rain-density', Config.rain, 'count',  'rain-density-val', round);
+  bind('rain-size',    Config.rain, 'size',   'rain-size-val',    fixed1);
+  bind('rain-speed',   Config.rain, 'speed',  'rain-speed-val',   fixed1);
+  bind('rain-drift',   Config.rain, 'drift',  'rain-drift-val',   fixed1);
+
+  // Rainbow
+  bind('rainbow-intensity',  Config.rainbow, 'intensity',  'rainbow-intensity-val',  fixed1);
+  bind('rainbow-dispersion', Config.rainbow, 'dispersion', 'rainbow-dispersion-val', fixed1);
+
+  const secCheck = document.getElementById('rainbow-secondary');
+  if (secCheck) {
+    secCheck.addEventListener('change', () => {
+      Config.rainbow.showSecondary = secCheck.checked;
+    });
+  }
+
+  const rbToggle = document.getElementById('rainbow-toggle');
+  if (rbToggle) {
+    rbToggle.addEventListener('change', () => {
+      Config.rainbow.enabled = rbToggle.checked;
+    });
+  }
 
   // Camera
   const fovEl  = document.getElementById('camera-fov');
@@ -75,25 +92,41 @@ export function initUI({ sun, rain, cameraController }) {
   // Reset camera
   const resetBtn = document.getElementById('reset-btn');
   if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      cameraController.resetToDefault();
+    resetBtn.addEventListener('click', () => cameraController.resetToDefault());
+  }
+
+  // Celso toggle
+  const celsoBtn = document.getElementById('celso-toggle-btn');
+  if (celsoBtn) {
+    celsoBtn.addEventListener('click', () => {
+      Config.celso.enabled = !Config.celso.enabled;
+      celsoBtn.textContent = Config.celso.enabled ? 'Hide Celso' : 'Show Celso';
     });
   }
 }
 
-// ── Stats display ──
-let _lastFPS = 0;
+// ── Stats display ──────────────────────────────────────────────────────────
 let _frames  = 0;
 let _elapsed = 0;
 
-export function updateStats(dt, dropCount) {
+export function updateStats(dt, dropCount, rainbowVisibility) {
   _frames++;
   _elapsed += dt;
   if (_elapsed >= 0.5) {
-    _lastFPS = Math.round(_frames / _elapsed);
+    const fps = Math.round(_frames / _elapsed);
     _frames  = 0;
     _elapsed = 0;
-    document.getElementById('fps-display').textContent       = `${_lastFPS} fps`;
+    document.getElementById('fps-display').textContent        = `${fps} fps`;
     document.getElementById('drop-count-display').textContent = `${dropCount.toLocaleString()} drops`;
+
+    // Rainbow visibility indicator
+    const vis = document.getElementById('rainbow-vis-display');
+    if (vis) {
+      const pct = Math.round(rainbowVisibility * 100);
+      vis.textContent = `🌈 ${pct}%`;
+      vis.style.color = rainbowVisibility > 0.5
+        ? `hsl(${280 + rainbowVisibility * 80}, 90%, 70%)`
+        : 'rgba(255,255,255,0.35)';
+    }
   }
 }

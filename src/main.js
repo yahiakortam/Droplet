@@ -9,6 +9,8 @@ import { Config }           from './config.js';
 import { createScene }      from './scene.js';
 import { Sun }              from './sun.js';
 import { Rain }             from './rain.js';
+import { Rainbow }          from './rainbow.js';
+import { Celso }            from './celso.js';
 import { CameraController } from './camera.js';
 import { initUI, updateStats } from './ui.js';
 
@@ -35,13 +37,15 @@ camera.position.set(
 );
 
 // ── Scene & systems ──
-const scene  = createScene();
-const sun    = new Sun(scene);
-const rain   = new Rain(scene);
+const scene   = createScene();
+const sun     = new Sun(scene);
+const rain    = new Rain(scene);
+const rainbow = new Rainbow(scene);
+const celso   = new Celso();
 const camCtrl = new CameraController(camera, renderer.domElement);
 
 // ── UI ──
-initUI({ sun, rain, cameraController: camCtrl });
+initUI({ sun, rain, rainbow, cameraController: camCtrl });
 
 // ── Resize ──
 window.addEventListener('resize', () => {
@@ -61,9 +65,11 @@ function animate() {
 
   camCtrl.update(rawDt);
   rain.update(rawDt);
+  rainbow.update(camera);
+  celso.update(rawDt, rainbow.visibility);
 
   renderer.render(scene, camera);
-  updateStats(rawDt, rain.dropCount);
+  updateStats(rawDt, rain.dropCount, rainbow.visibility);
 }
 
 animate();

@@ -39,4 +39,17 @@ export const Config = {
     timeScale: 1.0,
     paused: false,
   },
+
+  // Rainbow physics
+  rainbow: {
+    enabled: true,
+    intensity: 1.2,      // overall brightness multiplier
+    dispersion: 1.5,     // angular spread multiplier (1 = physical, >1 = wider/more vivid)
+    showSecondary: false, // second rainbow at ~52°
+  },
+
+  // Celso guide
+  celso: {
+    enabled: true,
+  },
 };
