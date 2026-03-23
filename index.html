@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Droplet — Rainbow Physics Simulation</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Control Panel -->
+  <div id="control-panel">
+    <div class="panel-header">
+      <span class="panel-title">Droplet</span>
+      <span class="panel-subtitle">Rainbow Physics Simulation</span>
+    </div>
+
+    <div class="section-label">Sun</div>
+    <div class="control-row">
+      <label>Azimuth <span id="sun-azimuth-val">180°</span></label>
+      <input type="range" id="sun-azimuth" min="0" max="360" value="180" step="1" />
+    </div>
+    <div class="control-row">
+      <label>Elevation <span id="sun-elevation-val">25°</span></label>
+      <input type="range" id="sun-elevation" min="0" max="90" value="25" step="1" />
+    </div>
+    <div class="control-row">
+      <label>Intensity <span id="sun-intensity-val">1.5</span></label>
+      <input type="range" id="sun-intensity" min="0.1" max="3.0" value="1.5" step="0.05" />
+    </div>
+
+    <div class="section-label">Rain</div>
+    <div class="control-row">
+      <label>Density <span id="rain-density-val">8000</span></label>
+      <input type="range" id="rain-density" min="500" max="25000" value="8000" step="500" />
+    </div>
+    <div class="control-row">
+      <label>Drop Size <span id="rain-size-val">1.0</span></label>
+      <input type="range" id="rain-size" min="0.3" max="3.0" value="1.0" step="0.1" />
+    </div>
+    <div class="control-row">
+      <label>Fall Speed <span id="rain-speed-val">1.0</span></label>
+      <input type="range" id="rain-speed" min="0.1" max="4.0" value="1.0" step="0.1" />
+    </div>
+    <div class="control-row">
+      <label>Wind Drift <span id="rain-drift-val">0.0</span></label>
+      <input type="range" id="rain-drift" min="-2.0" max="2.0" value="0.0" step="0.1" />
+    </div>
+
+    <div class="section-label">Camera</div>
+    <div class="control-row">
+      <label>FOV <span id="camera-fov-val">60°</span></label>
+      <input type="range" id="camera-fov" min="30" max="110" value="60" step="1" />
+    </div>
+
+    <div class="section-label">Simulation</div>
+    <div class="control-row">
+      <label>Time Scale <span id="time-scale-val">1.0</span></label>
+      <input type="range" id="time-scale" min="0.0" max="3.0" value="1.0" step="0.05" />
+    </div>
+    <div class="button-row">
+      <button id="pause-btn">Pause</button>
+      <button id="reset-btn">Reset Camera</button>
+    </div>
+
+    <div class="section-label">Controls</div>
+    <div class="help-text">
+      <span><b>Orbit:</b> Left drag</span>
+      <span><b>Pan:</b> Right drag</span>
+      <span><b>Zoom:</b> Scroll</span>
+      <span><b>WASD:</b> Fly</span>
+      <span><b>Q/E:</b> Up/Down</span>
+    </div>
+  </div>
+
+  <!-- Stats overlay -->
+  <div id="stats-overlay">
+    <div id="fps-display">-- fps</div>
+    <div id="drop-count-display">-- drops</div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
