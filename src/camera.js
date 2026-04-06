@@ -1,5 +1,5 @@
 /**
- * camera.js
+ * camera.js!
  * Full camera controller:
  *   - Orbit (left mouse drag)
  *   - Pan   (right / middle drag)
