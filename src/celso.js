@@ -125,6 +125,22 @@ export class Celso {
       this._hide();
       this._dismissed = true;
     });
+
+    document.getElementById('celso-prev')?.addEventListener('click', () => {
+      const set = MSGS[this._state];
+      if (!set || set.length <= 1) return;
+      this._msgIndex = (this._msgIndex - 1 + set.length) % set.length;
+      this._timer = 0; // reset auto-advance
+      this._showSet(this._state, this._msgIndex);
+    });
+
+    document.getElementById('celso-next')?.addEventListener('click', () => {
+      const set = MSGS[this._state];
+      if (!set || set.length <= 1) return;
+      this._msgIndex = (this._msgIndex + 1) % set.length;
+      this._timer = 0; // reset auto-advance
+      this._showSet(this._state, this._msgIndex);
+    });
   }
 
   _buildDots() {
@@ -133,6 +149,12 @@ export class Celso {
     for (let i = 0; i < 5; i++) {
       const d = document.createElement('div');
       d.className = 'celso-dot';
+      d.style.cursor = 'pointer';
+      d.addEventListener('click', () => {
+        this._msgIndex = i;
+        this._timer = 0;
+        this._showSet(this._state, this._msgIndex);
+      });
       container.appendChild(d);
       this._dots.push(d);
     }
