@@ -6,6 +6,7 @@
 
 import { Config } from './config.js';
 import { PRESETS } from './camera.js';
+import { audio } from './audio.js';
 
 export function initUI({ sun, rain, rainbow, cameraController }) {
 
@@ -115,6 +116,26 @@ export function initUI({ sun, rain, rainbow, cameraController }) {
   bindOverlay('overlay-rays',  'rayPaths');
   bindOverlay('overlay-ring',  'angleRing');
   bindOverlay('overlay-info',  'infoPanel');
+
+  // ── Music volume + mute ──────────────────────────────────────────────────
+  const volEl  = document.getElementById('music-volume');
+  const volLbl = document.getElementById('music-volume-val');
+  const muteEl = document.getElementById('music-mute');
+
+  if (volEl) {
+    volEl.addEventListener('input', () => {
+      const v = parseInt(volEl.value, 10);
+      audio.volume = v / 100;
+      if (volLbl) volLbl.textContent = v + '%';
+      if (muteEl && v > 0) muteEl.checked = false;
+    });
+  }
+
+  if (muteEl) {
+    muteEl.addEventListener('change', () => {
+      audio.muted = muteEl.checked;
+    });
+  }
 
   // ── Celso toggle ─────────────────────────────────────────────────────────
   const celsoBtn = document.getElementById('celso-toggle-btn');

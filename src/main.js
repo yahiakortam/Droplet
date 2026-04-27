@@ -15,6 +15,7 @@ import { RayVis }            from './rayvis.js';
 import { AngleOverlay }      from './overlays.js';
 import { CameraController }  from './camera.js';
 import { initUI, updateStats } from './ui.js';
+import './audio.js';
 
 // ── Renderer ──────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
