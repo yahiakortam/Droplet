@@ -15,7 +15,6 @@ import { RayVis }            from './rayvis.js';
 import { AngleOverlay }      from './overlays.js';
 import { CameraController }  from './camera.js';
 import { initUI, updateStats } from './ui.js';
-import { WetLens }             from './wetlens.js';
 
 // ── Renderer ──────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -62,18 +61,14 @@ function getSunDir() {
   return _sunDir;
 }
 
-// ── Wet lens post-processing ──────────────────────────────────────────────
-const wetLens = new WetLens(renderer);
-
 // ── UI ────────────────────────────────────────────────────────────────────
-initUI({ sun, rain, rainbow, cameraController: camCtrl, wetLens });
+initUI({ sun, rain, rainbow, cameraController: camCtrl });
 
 // ── Resize ────────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => { // listens for browser resize and updates the camera's aspect ratio and calls updateProjectionMatrix to update the change
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  wetLens.resize();
 });
 
 // ── Main loop ─────────────────────────────────────────────────────────────
@@ -93,7 +88,7 @@ function animate() {
   angleOverlay.update(camera);
   celso.update(rawDt, rainbow.visibility);
 
-  wetLens.render(scene, camera, rawDt); // render scene → wet-lens composite
+  renderer.render(scene, camera); // render the scene
   updateStats(rawDt, rain.dropCount, rainbow.visibility, rayVis.lastExitAngles); // update ui
 }
 

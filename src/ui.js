@@ -7,7 +7,7 @@
 import { Config } from './config.js';
 import { PRESETS } from './camera.js';
 
-export function initUI({ sun, rain, rainbow, cameraController, wetLens }) {
+export function initUI({ sun, rain, rainbow, cameraController }) {
 
   // ── Generic slider binder ──────────────────────────────────────────────
   function bind(id, obj, key, display, fmt = v => v) {
@@ -122,15 +122,6 @@ export function initUI({ sun, rain, rainbow, cameraController, wetLens }) {
     celsoBtn.addEventListener('click', () => {
       Config.celso.enabled = !Config.celso.enabled;
       celsoBtn.textContent = Config.celso.enabled ? 'Hide Celso' : 'Show Celso';
-    });
-  }
-
-  // ── Wet lens toggle ───────────────────────────────────────────────────────
-  const wetLensBtn = document.getElementById('wetlens-toggle-btn');
-  if (wetLensBtn && wetLens) {
-    wetLensBtn.addEventListener('click', () => {
-      wetLens.enabled = !wetLens.enabled;
-      wetLensBtn.textContent = wetLens.enabled ? 'Hide Wet Lens' : 'Show Wet Lens';
     });
   }
 }
