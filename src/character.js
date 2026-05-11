@@ -271,7 +271,7 @@ export class CharacterController {
       this._drag.x = e.clientX;
       this._drag.y = e.clientY;
       this._camYaw   -= dx * 0.005;
-      this._camPitch  = Math.max(0.05, Math.min(1.2, this._camPitch + dy * 0.004));
+      this._camPitch  = Math.max(-0.55, Math.min(1.45, this._camPitch + dy * 0.004));
       this._tweenYaw = this._tweenPitch = this._tweenRadius = null; // cancel tween
     });
     window.addEventListener('wheel', e => {
@@ -294,15 +294,18 @@ export class CharacterController {
 
   // ── Camera update ─────────────────────────────────────────────────────────
   _applyCamera() {
-    const lx = this._pos.x;
-    const lz = this._pos.z;
+    const lx    = this._pos.x;
+    const lz    = this._pos.z;
     const lookY = this._model.position.y + 1.62;   // head height
 
-    this.camera.position.set(
-      lx + Math.sin(this._camYaw)  * this._camRadius * Math.cos(this._camPitch),
-      lookY + Math.sin(this._camPitch) * this._camRadius,
-      lz + Math.cos(this._camYaw)  * this._camRadius * Math.cos(this._camPitch),
-    );
+    const camX = lx + Math.sin(this._camYaw) * this._camRadius * Math.cos(this._camPitch);
+    const camZ = lz + Math.cos(this._camYaw) * this._camRadius * Math.cos(this._camPitch);
+    const camY = lookY + Math.sin(this._camPitch) * this._camRadius;
+
+    // Never clip below terrain surface
+    const minY = terrainHeight(camX, camZ) + 0.5;
+
+    this.camera.position.set(camX, Math.max(camY, minY), camZ);
     this.camera.lookAt(lx, lookY, lz);
   }
 

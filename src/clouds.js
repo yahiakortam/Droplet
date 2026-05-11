@@ -48,7 +48,7 @@ export class Clouds {
     for (let i = 0; i < CLOUD_COUNT; i++) {
       this._clouds.push({
         x:      rnd(-FIELD, FIELD),
-        y:      rnd(65, 115),
+        y:      rnd(150, 240),
         z:      rnd(-FIELD, FIELD),
         scale:  rnd(1.0, 2.0),
         speedX: rnd(1.8, 4.5) * (Math.random() < 0.5 ? 1 : -1),
