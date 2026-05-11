@@ -18,6 +18,7 @@ import { Grass }               from './grass.js';
 import { Clouds }              from './clouds.js';
 import { createVegetation }    from './vegetation.js';
 import { Newton }              from './newton.js';
+import { Multiplayer }         from './multiplayer.js';
 import { initUI, updateStats } from './ui.js';
 import './audio.js';
 
@@ -58,6 +59,7 @@ const rayVis       = new RayVis(scene);
 const angleOverlay = new AngleOverlay(scene);
 const camCtrl      = new CharacterController(camera, scene);
 const newton       = new Newton(scene, appleMesh, appleTreeData);
+const multiplayer  = new Multiplayer(scene);
 
 // ── Sun direction helper (shared across systems) ──────────────────────────
 const _sunDir = new THREE.Vector3();
@@ -101,6 +103,7 @@ function animate(now = performance.now()) {
   sun.update(camera, rawDt);
   clouds.update(rawDt);
   newton.update(rawDt, camCtrl._pos);
+  multiplayer.update(rawDt, camCtrl.pos, camCtrl.facing);
   camCtrl.update(rawDt);
   grass.update(rawDt, Config.rain.drift);
   rain.update(rawDt);

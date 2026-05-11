@@ -292,6 +292,9 @@ export class CharacterController {
 
   resetToDefault() { this.tweenTo('Rainbow View'); }
 
+  get pos()    { return this._pos; }
+  get facing() { return this._facing; }
+
   // ── Camera update ─────────────────────────────────────────────────────────
   _applyCamera() {
     const lx    = this._pos.x;

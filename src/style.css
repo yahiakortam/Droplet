@@ -605,6 +605,12 @@ button:hover {
 .dot-g { color: #4ade80; }
 .dot-b { color: #60a5fa; }
 
+#mp-status {
+  font-size: 11px;
+  color: rgba(134, 239, 172, 0.75);
+  margin-top: 2px;
+}
+
 /* ── Newton Moment — full-screen achievement overlay ─────────────────────── */
 #newton-overlay {
   position: fixed;
