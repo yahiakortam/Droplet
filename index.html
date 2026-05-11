@@ -216,17 +216,25 @@
     </div>
   </div>
 
-  <!-- ── Newton Moment achievement popup ──────────────────────────────────── -->
-  <div id="newton-popup" class="newton-hidden">
-    <div class="newton-bubble">
-      <div class="newton-bubble-tail"></div>
-      <div class="newton-achievement-badge">&#9889; Achievement Unlocked</div>
-      <div class="newton-title">Newton Moment</div>
-      <div class="newton-quote">"An apple showed gravity.<br>A raindrop reveals light."</div>
+  <!-- ── Newton Moment achievement overlay ────────────────────────────────── -->
+  <div id="newton-overlay" class="newton-ov-hidden">
+    <!-- falling apples injected here by JS -->
+    <div id="newton-apples-rain"></div>
+
+    <!-- centred card -->
+    <div id="newton-card">
       <button id="newton-close" class="newton-close-btn">&#x2715;</button>
-    </div>
-    <div class="newton-avatar-wrap">
-      <img src="src/newton_avatar.png" class="newton-avatar-img" alt="Newton" />
+      <div class="newton-card-inner">
+        <div class="newton-avatar-wrap">
+          <img src="src/newton_avatar.png" class="newton-avatar-img" alt="Isaac Newton" />
+        </div>
+        <div class="newton-text-col">
+          <div class="newton-achievement-badge">&#9889;&nbsp; Achievement Unlocked</div>
+          <div class="newton-title">Newton Moment</div>
+          <div class="newton-divider"></div>
+          <div class="newton-quote">"An apple showed gravity.<br>A raindrop reveals light."</div>
+        </div>
+      </div>
     </div>
   </div>
 

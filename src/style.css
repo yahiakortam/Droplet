@@ -605,133 +605,208 @@ button:hover {
 .dot-g { color: #4ade80; }
 .dot-b { color: #60a5fa; }
 
-/* ── Newton Moment achievement popup ──────────────────────────────────────── */
-#newton-popup {
+/* ── Newton Moment — full-screen achievement overlay ─────────────────────── */
+#newton-overlay {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 300;
+  inset: 0;
+  z-index: 500;
   display: flex;
-  align-items: flex-end;
-  gap: 0;
-  pointer-events: auto;
-  transform: translateY(0);
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 4, 0, 0.82);
   opacity: 1;
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity  0.4s ease;
+  transition: opacity 0.6s ease;
+  overflow: hidden;
 }
 
-#newton-popup.newton-hidden {
-  transform: translateY(calc(100% + 50px));
+#newton-overlay.newton-ov-hidden {
   opacity: 0;
   pointer-events: none;
 }
 
-.newton-bubble {
-  position: relative;
-  background: linear-gradient(145deg, rgba(28, 14, 4, 0.97), rgba(40, 22, 6, 0.97));
-  border: 1.5px solid rgba(251, 191, 36, 0.35);
-  border-radius: 16px;
-  padding: 14px 18px 14px 18px;
-  min-width: 220px;
-  max-width: 260px;
-  backdrop-filter: blur(16px);
-  box-shadow:
-    0 8px 36px rgba(251, 146, 20, 0.25),
-    0 0 0 1px rgba(251, 191, 36, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  margin-bottom: 36px;
-  margin-right: -2px;
-}
-
-/* Tail points RIGHT toward the avatar */
-.newton-bubble-tail {
-  position: absolute;
-  right: -12px;
-  bottom: 22px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 12px solid rgba(40, 22, 6, 0.97);
-}
-
-.newton-bubble-tail::before {
+/* pulsing golden radial glow behind the card */
+#newton-overlay::before {
   content: '';
   position: absolute;
-  right: 1px;
-  top: -11px;
-  width: 0;
-  height: 0;
-  border-top: 11px solid transparent;
-  border-bottom: 11px solid transparent;
-  border-left: 13px solid rgba(251, 191, 36, 0.35);
-  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%,
+    rgba(251, 191, 36, 0.28) 0%,
+    rgba(234, 88,  12, 0.12) 35%,
+    transparent 68%);
+  animation: newton-glow-pulse 2.2s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.newton-achievement-badge {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.25);
-  border-radius: 4px;
-  padding: 2px 7px;
-  display: inline-block;
-  margin-bottom: 7px;
-}
-
-.newton-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fde68a;
-  letter-spacing: 0.02em;
-  margin-bottom: 7px;
-}
-
-.newton-quote {
-  font-size: 12px;
-  color: rgba(253, 230, 138, 0.75);
-  line-height: 1.55;
-  font-style: italic;
-}
-
-.newton-close-btn {
+/* second shimmer sweep */
+#newton-overlay::after {
+  content: '';
   position: absolute;
-  top: 8px;
-  right: 10px;
-  background: none;
-  border: none;
-  color: rgba(251, 191, 36, 0.4);
-  font-size: 13px;
-  cursor: pointer;
-  padding: 2px 4px;
-  line-height: 1;
-  transition: color 0.2s;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(251, 191, 36, 0.07) 50%,
+    transparent 70%
+  );
+  animation: newton-shimmer 3s linear infinite;
+  pointer-events: none;
 }
 
-.newton-close-btn:hover {
-  color: #fbbf24;
+@keyframes newton-glow-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1;   }
 }
 
+@keyframes newton-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%);  }
+}
+
+/* ── Falling apple rain ── */
+#newton-apples-rain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.newton-apple {
+  position: absolute;
+  top: -60px;
+  user-select: none;
+  animation: newton-apple-fall linear infinite;
+  will-change: transform;
+}
+
+@keyframes newton-apple-fall {
+  0%   { transform: translateY(0)      rotate(0deg);   opacity: 0.9; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(110vh)  rotate(400deg); opacity: 0;   }
+}
+
+/* ── Centre card ── */
+#newton-card {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(150deg, rgba(22, 10, 2, 0.97) 0%, rgba(38, 18, 4, 0.97) 100%);
+  border: 2px solid rgba(251, 191, 36, 0.45);
+  border-radius: 24px;
+  padding: 36px 40px 32px;
+  max-width: 620px;
+  width: calc(100vw - 48px);
+  box-shadow:
+    0 0 0 1px  rgba(251, 191, 36, 0.10),
+    0 0 60px   rgba(251, 146, 20, 0.35),
+    0 0 120px  rgba(251, 146, 20, 0.15),
+    0 24px 60px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  animation: newton-card-pop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes newton-card-pop {
+  0%   { transform: scale(0.4) translateY(60px); opacity: 0;   }
+  60%  { transform: scale(1.04) translateY(-6px); opacity: 1; }
+  100% { transform: scale(1)   translateY(0);    opacity: 1;   }
+}
+
+.newton-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* ── Avatar ── */
 .newton-avatar-wrap {
   flex-shrink: 0;
-  width: 130px;
-  position: relative;
-  z-index: 1;
-  animation: newton-bob 3.5s ease-in-out infinite;
-  filter: drop-shadow(0 8px 24px rgba(251, 146, 20, 0.4));
+  width: 180px;
+  animation: newton-bob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 12px 32px rgba(251, 146, 20, 0.55));
 }
 
 .newton-avatar-img {
-  width: 130px;
+  width: 100%;
   height: auto;
   display: block;
 }
 
 @keyframes newton-bob {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ── Text column ── */
+.newton-text-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.newton-achievement-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.14);
+  border: 1.5px solid rgba(251, 191, 36, 0.35);
+  border-radius: 6px;
+  padding: 3px 10px;
+  margin-bottom: 12px;
+  animation: newton-badge-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes newton-badge-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);  }
+  50%       { box-shadow: 0 0 20px rgba(251, 191, 36, 0.7); }
+}
+
+.newton-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fde68a;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+}
+
+.newton-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, #fbbf24, transparent);
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+
+.newton-quote {
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(253, 230, 138, 0.82);
+  line-height: 1.65;
+}
+
+/* ── Close button ── */
+.newton-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(251, 191, 36, 0.5);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.newton-close-btn:hover {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
 }
