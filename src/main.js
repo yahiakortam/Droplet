@@ -13,17 +13,21 @@ import { Rainbow }           from './rainbow.js';
 import { Celso }             from './celso.js';
 import { RayVis }            from './rayvis.js';
 import { AngleOverlay }      from './overlays.js';
-import { CameraController }  from './camera.js';
+import { CharacterController } from './character.js';
+import { Grass }               from './grass.js';
+import { createVegetation }    from './vegetation.js';
 import { initUI, updateStats } from './ui.js';
 import './audio.js';
 
 // ── Renderer ──────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(1);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping         = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
 renderer.outputColorSpace    = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled   = true;
+renderer.shadowMap.type      = THREE.PCFShadowMap;
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 // ── Camera ────────────────────────────────────────────────────────────────
@@ -41,13 +45,15 @@ camera.position.set(
 
 // ── Scene & systems ───────────────────────────────────────────────────────
 const scene        = createScene();
+createVegetation(scene);
+const grass        = new Grass(scene);
 const sun          = new Sun(scene);
 const rain         = new Rain(scene);
 const rainbow      = new Rainbow(scene);
 const celso        = new Celso();
 const rayVis       = new RayVis(scene);
 const angleOverlay = new AngleOverlay(scene);
-const camCtrl      = new CameraController(camera, renderer.domElement);
+const camCtrl      = new CharacterController(camera, scene);
 
 // ── Sun direction helper (shared across systems) ──────────────────────────
 const _sunDir = new THREE.Vector3();
@@ -74,15 +80,23 @@ window.addEventListener('resize', () => { // listens for browser resize and upda
 
 // ── Main loop ─────────────────────────────────────────────────────────────
 const clock = new THREE.Clock(); // measures time between frames (dt)
+let _lastFrameTime = 0;
 
-function animate() {
-  requestAnimationFrame(animate); // runs the animate function every frame recursively
+function animate(now = performance.now()) {
+  requestAnimationFrame(animate);
+
+  // Hard 60 fps cap
+  if (now - _lastFrameTime < 16.5) return;
+  _lastFrameTime += 16.667;
+  if (now - _lastFrameTime > 16.667) _lastFrameTime = now;
 
   const rawDt = Math.min(clock.getDelta(), 0.05);
   const sunDir = getSunDir(); // compute the direction of the sun
 
   // update everything on the scene
+  sun.update(camera, rawDt);
   camCtrl.update(rawDt);
+  grass.update(rawDt, Config.rain.drift);
   rain.update(rawDt);
   rainbow.update(camera);
   rayVis.update(sunDir);
@@ -93,4 +107,4 @@ function animate() {
   updateStats(rawDt, rain.dropCount, rainbow.visibility, rayVis.lastExitAngles); // update ui
 }
 
-animate();
+requestAnimationFrame(animate);

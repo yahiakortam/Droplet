@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import { buildTerrainMesh } from './terrain.js';
 
 export function createScene() {
   const scene = new THREE.Scene();
@@ -52,22 +53,8 @@ export function createScene() {
   const sky = new THREE.Mesh(skyGeo, skyMat);
   scene.add(sky);
 
-  // ── Ground plane ──
-  const groundGeo = new THREE.PlaneGeometry(800, 800, 1, 1);
-  const groundMat = new THREE.MeshLambertMaterial({
-    color: 0x2d4a1e,
-  });
-  const ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  ground.receiveShadow = true;
-  scene.add(ground);
-
-  // Subtle grid on the ground for spatial reference
-  const grid = new THREE.GridHelper(400, 40, 0x3a5c28, 0x3a5c28);
-  grid.position.y = 0.05;
-  grid.material.opacity = 0.25;
-  grid.material.transparent = true;
-  scene.add(grid);
+  // ── Terrain mesh (rolling hills) ──
+  scene.add(buildTerrainMesh());
 
   // ── Ambient light ──
   const ambient = new THREE.AmbientLight(0x6688aa, 0.5);

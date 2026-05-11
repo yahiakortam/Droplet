@@ -5,7 +5,6 @@
  */
 
 import { Config } from './config.js';
-import { PRESETS } from './camera.js';
 import { audio } from './audio.js';
 
 export function initUI({ sun, rain, rainbow, cameraController }) {
@@ -85,6 +84,7 @@ export function initUI({ sun, rain, rainbow, cameraController }) {
   document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', () => applyTimeScale(parseFloat(btn.dataset.speed)));
   });
+
 
   // Pause / resume
   const pauseBtn = document.getElementById('pause-btn');
