@@ -15,6 +15,7 @@ import { RayVis }            from './rayvis.js';
 import { AngleOverlay }      from './overlays.js';
 import { CharacterController } from './character.js';
 import { Grass }               from './grass.js';
+import { Clouds }              from './clouds.js';
 import { createVegetation }    from './vegetation.js';
 import { initUI, updateStats } from './ui.js';
 import './audio.js';
@@ -47,6 +48,7 @@ camera.position.set(
 const scene        = createScene();
 createVegetation(scene);
 const grass        = new Grass(scene);
+const clouds       = new Clouds(scene);
 const sun          = new Sun(scene);
 const rain         = new Rain(scene);
 const rainbow      = new Rainbow(scene);
@@ -95,6 +97,7 @@ function animate(now = performance.now()) {
 
   // update everything on the scene
   sun.update(camera, rawDt);
+  clouds.update(rawDt);
   camCtrl.update(rawDt);
   grass.update(rawDt, Config.rain.drift);
   rain.update(rawDt);
