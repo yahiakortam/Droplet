@@ -93,25 +93,29 @@ export function createVegetation(scene) {
     });
   }
 
-  // ── Place apples ─────────────────────────────────────────────────────────────
+  // ── Place apples — capture positions for Newton easter egg ──────────────────
+  const appleTreeData = [];
   let ai = 0;
   for (let i = 0; i < APPLE_TREES; i++) {
     const tx = treeXYZ[i * 3];
     const ty = treeXYZ[i * 3 + 1];
     const tz = treeXYZ[i * 3 + 2];
+    const treeApples = [];
     for (let j = 0; j < APPLES_PER; j++) {
       const ang = rnd(0, Math.PI * 2);
       const rad = rnd(0.7, 1.9);
-      dummy.position.set(
-        tx + Math.cos(ang) * rad,
-        ty + rnd(2.2, 4.8),
-        tz + Math.sin(ang) * rad,
-      );
+      const ax  = tx + Math.cos(ang) * rad;
+      const ay  = ty + rnd(2.2, 4.8);
+      const az  = tz + Math.sin(ang) * rad;
+      dummy.position.set(ax, ay, az);
       dummy.rotation.set(0, 0, 0);
       dummy.scale.setScalar(1);
       dummy.updateMatrix();
-      appleMesh.setMatrixAt(ai++, dummy.matrix);
+      appleMesh.setMatrixAt(ai, dummy.matrix);
+      treeApples.push({ x: ax, y: ay, z: az, idx: ai });
+      ai++;
     }
+    appleTreeData.push({ x: tx, y: ty, z: tz, apples: treeApples });
   }
 
   // ── Place bushes ─────────────────────────────────────────────────────────────
@@ -131,4 +135,6 @@ export function createVegetation(scene) {
   foliageMeshes.forEach(m => { m.instanceMatrix.needsUpdate = true; });
   appleMesh.instanceMatrix.needsUpdate = true;
   bushMesh.instanceMatrix.needsUpdate  = true;
+
+  return { appleMesh, appleTreeData };
 }

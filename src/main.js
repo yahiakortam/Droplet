@@ -17,6 +17,7 @@ import { CharacterController } from './character.js';
 import { Grass }               from './grass.js';
 import { Clouds }              from './clouds.js';
 import { createVegetation }    from './vegetation.js';
+import { Newton }              from './newton.js';
 import { initUI, updateStats } from './ui.js';
 import './audio.js';
 
@@ -46,7 +47,7 @@ camera.position.set(
 
 // ── Scene & systems ───────────────────────────────────────────────────────
 const scene        = createScene();
-createVegetation(scene);
+const { appleMesh, appleTreeData } = createVegetation(scene);
 const grass        = new Grass(scene);
 const clouds       = new Clouds(scene);
 const sun          = new Sun(scene);
@@ -56,6 +57,7 @@ const celso        = new Celso();
 const rayVis       = new RayVis(scene);
 const angleOverlay = new AngleOverlay(scene);
 const camCtrl      = new CharacterController(camera, scene);
+const newton       = new Newton(scene, appleMesh, appleTreeData);
 
 // ── Sun direction helper (shared across systems) ──────────────────────────
 const _sunDir = new THREE.Vector3();
@@ -98,6 +100,7 @@ function animate(now = performance.now()) {
   // update everything on the scene
   sun.update(camera, rawDt);
   clouds.update(rawDt);
+  newton.update(rawDt, camCtrl._pos);
   camCtrl.update(rawDt);
   grass.update(rawDt, Config.rain.drift);
   rain.update(rawDt);
