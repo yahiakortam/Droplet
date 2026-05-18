@@ -2,14 +2,12 @@
  * server.js — Droplet multiplayer server
  *
  * Serves the built client (dist/) over HTTP and syncs player
- * positions over WebSocket — all on one port so ngrok only needs
- * to tunnel a single URL.
+ * positions over WebSocket — all on one port.
  *
  * Quickstart:
- *   npm install          # install ws
- *   npm run build        # build the client
- *   node server.js       # start on :3001
- *   npx ngrok http 3001  # expose to internet → share that URL
+ *   npm install      # install ws
+ *   npm run build    # build the client
+ *   node server.js   # start on :3001
  */
 
 import http              from 'http';
@@ -51,13 +49,13 @@ const httpServer = http.createServer((req, res) => {
       // SPA fallback
       fs.readFile(path.join(DIST, 'index.html'), (e2, d2) => {
         if (e2) { res.writeHead(404); res.end('Not found'); return; }
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'ngrok-skip-browser-warning': 'true' });
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(d2);
       });
       return;
     }
     const ct = MIME[path.extname(filePath)] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'no-cache', 'ngrok-skip-browser-warning': 'true' });
+    res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'no-cache' });
     res.end(data);
   });
 });
@@ -117,9 +115,5 @@ wss.on('connection', ws => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`\n🌈  Droplet server → http://localhost:${PORT}`);
-  console.log(`    To invite others:`);
-  console.log(`      1. Run: npx ngrok http ${PORT}`);
-  console.log(`      2. Share the ngrok URL with ?ngrok-skip-browser-warning=true appended`);
-  console.log(`         e.g. https://xxxx.ngrok-free.app?ngrok-skip-browser-warning=true\n`);
+  console.log(`\n🌈  Droplet server → http://localhost:${PORT}\n`);
 });
