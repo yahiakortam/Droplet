@@ -51,13 +51,13 @@ const httpServer = http.createServer((req, res) => {
       // SPA fallback
       fs.readFile(path.join(DIST, 'index.html'), (e2, d2) => {
         if (e2) { res.writeHead(404); res.end('Not found'); return; }
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'ngrok-skip-browser-warning': 'true' });
         res.end(d2);
       });
       return;
     }
     const ct = MIME[path.extname(filePath)] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'no-cache' });
+    res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'no-cache', 'ngrok-skip-browser-warning': 'true' });
     res.end(data);
   });
 });
@@ -118,5 +118,8 @@ wss.on('connection', ws => {
 
 httpServer.listen(PORT, () => {
   console.log(`\n🌈  Droplet server → http://localhost:${PORT}`);
-  console.log(`    To invite others: npx ngrok http ${PORT}\n`);
+  console.log(`    To invite others:`);
+  console.log(`      1. Run: npx ngrok http ${PORT}`);
+  console.log(`      2. Share the ngrok URL with ?ngrok-skip-browser-warning=true appended`);
+  console.log(`         e.g. https://xxxx.ngrok-free.app?ngrok-skip-browser-warning=true\n`);
 });
